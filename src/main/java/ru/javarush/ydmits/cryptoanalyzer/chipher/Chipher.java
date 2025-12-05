@@ -6,4 +6,10 @@ public interface Chipher {
     String execute(String content, int key);
 
     Property[] getProperty();
+
+    int getNumberSymbol(Character symbol);
+
+    Character getSymbolNumber(int number);
+
+    int getTableSize();
 }

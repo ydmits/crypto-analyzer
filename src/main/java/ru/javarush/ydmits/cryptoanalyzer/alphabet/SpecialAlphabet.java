@@ -4,7 +4,7 @@ import ru.javarush.ydmits.cryptoanalyzer.constant.Constants;
 
 public class SpecialAlphabet extends AbstractAlphabet{
 
-    private Character[] symbols = Constants.SPECIAL.toArray(new Character[0]);
+    private final static Character[] symbols = Constants.SPECIAL;
 
     @Override
     public Character[] getAlphabet() {

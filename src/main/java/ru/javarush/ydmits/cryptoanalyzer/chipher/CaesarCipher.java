@@ -16,19 +16,26 @@ public class CaesarCipher implements Chipher, Propertyable {
 
     @Override
     public String execute(String content, int key) {
+
+
         StringBuilder result = new StringBuilder();
 
-        String lowerContent = content.toLowerCase();
+        char[] lowerContent = content.toLowerCase().toCharArray();
 
         for (int i = 0; i < content.length(); i++) {
 
-            Character originalChar = lowerContent.charAt(i);
+            char originalChar = lowerContent[i];
 
             if(tableIndex.containsKey(originalChar)) {
                 int originalIndex = tableIndex.get(originalChar);
 
-                int newIndex = (tableSize + originalIndex + key) % tableSize;
-                Character newChar = indexTable.get(newIndex);
+                int newIndex = (originalIndex + key) % tableSize;
+
+                if (newIndex < 0) {
+                    newIndex += tableSize;
+                }
+
+                char newChar = indexTable.get(newIndex);
 
                 result.append(newChar);
             } else {
@@ -45,5 +52,17 @@ public class CaesarCipher implements Chipher, Propertyable {
     public Property[] getProperty() {
 
         return properties;
+    }
+
+    public int getNumberSymbol(Character symbol) {
+        return tableIndex.get(symbol);
+    }
+
+    public Character getSymbolNumber(int number) {
+        return indexTable.get(number);
+    }
+
+    public int getTableSize() {
+        return tableSize;
     }
 }

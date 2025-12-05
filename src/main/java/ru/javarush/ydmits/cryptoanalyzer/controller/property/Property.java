@@ -28,11 +28,11 @@ public enum Property {
 
         switch (this) {
             case SOURCE_PATH -> {
-                //fileNameValidation.validateForReading(content);
+                fileNameValidation.validateForReading(content);
                 return true;
             }
             case TARGET_PATH -> {
-                //fileNameValidation.validateForWriting(content);
+                fileNameValidation.validateForWriting(content);
                 return true;
             }
             case KEY -> {
