@@ -6,8 +6,8 @@ import ru.javarush.ydmits.cryptoanalyzer.file.FileNameValidation;
 public enum Property {
     SOURCE_PATH,
     TARGET_PATH,
-    KEY,
-    CONTENT;
+    ANALYSIS_PATH,
+    KEY;
 
     private String content;
 
@@ -27,7 +27,7 @@ public enum Property {
         FileNameValidation fileNameValidation = new FileNameValidation();
 
         switch (this) {
-            case SOURCE_PATH -> {
+            case SOURCE_PATH, ANALYSIS_PATH -> {
                 fileNameValidation.validateForReading(content);
                 return true;
             }
@@ -42,9 +42,8 @@ public enum Property {
                 } catch (NumberFormatException ex) {
                     return false;
                 }
-                return (key >= 0 && key <= Constants.SIZE_ENCODING_TABLE);
+                return (key >= 0 && key <= Constants.SIZE_ENCODING_TABLE); //todo check <= case
             }
-            case CONTENT -> {return content != null;}
         }
 
         return true;

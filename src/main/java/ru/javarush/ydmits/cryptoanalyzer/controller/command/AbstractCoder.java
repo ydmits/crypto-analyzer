@@ -1,41 +1,38 @@
 package ru.javarush.ydmits.cryptoanalyzer.controller.command;
 
-import ru.javarush.ydmits.cryptoanalyzer.chipher.CaesarCipher;
-import ru.javarush.ydmits.cryptoanalyzer.chipher.Chipher;
 import ru.javarush.ydmits.cryptoanalyzer.controller.property.Property;
-import ru.javarush.ydmits.cryptoanalyzer.controller.property.Propertyable;
-import ru.javarush.ydmits.cryptoanalyzer.file.FileProcessor;
 
-import java.util.List;
+public abstract class AbstractCoder implements Action {
 
-public abstract class AbstractCoder implements Action, Propertyable {
+    protected Property[] properties;
+
+    protected String sourcePath;
+    protected String targetPath;
+    protected int key;
 
     @Override
     public void execute(){
-        Property[] properties = getProperty();
 
-        String sourcePath = properties[0].getProperty();
-        String targetPath = properties[1].getProperty();
-        int key = Integer.parseInt(properties[2].getProperty());
-        key = getKey(key);
-
-        FileProcessor fileProcessor = new FileProcessor();
-
-        List<String> content = fileProcessor.readFile(sourcePath);
-
-        Chipher chipher = new CaesarCipher();
-
-        for (String str : content) {
-            String result = chipher.execute(str, key);
-            fileProcessor.appendToFile(targetPath, result);
-        }
-
+        setSourcePath();
+        setTargetPath();
+        setKey();
+        doAction();
     }
 
+    public Property[] getProperty() {
+        return properties;
+    }
 
-    protected abstract int getKey(int key);
+    protected void setSourcePath() {
+        sourcePath = properties[0].getProperty();
+    }
 
-    @Override
-    public abstract Property[] getProperty();
+    protected void setTargetPath() {
+        targetPath = properties[1].getProperty();
+    }
+
+    protected abstract void setKey();
+
+    protected abstract void doAction();
 
 }

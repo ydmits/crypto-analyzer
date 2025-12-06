@@ -2,13 +2,10 @@ package ru.javarush.ydmits.cryptoanalyzer.chipher;
 
 import ru.javarush.ydmits.cryptoanalyzer.alphabet.EncodingTable;
 import ru.javarush.ydmits.cryptoanalyzer.controller.property.Property;
-import ru.javarush.ydmits.cryptoanalyzer.controller.property.Propertyable;
 
 import java.util.Map;
 
-public class CaesarCipher implements Chipher, Propertyable {
-
-    Property [] properties = {Property.CONTENT, Property.KEY};
+public class CaesarCipher implements Chipher {
 
     Map<Character, Integer> tableIndex = EncodingTable.getMapEncodingTableChatInt();
     Map<Integer, Character> indexTable = EncodingTable.getMapEncodingTableIntChar();
@@ -46,12 +43,6 @@ public class CaesarCipher implements Chipher, Propertyable {
         result.append('\n');
 
         return result.toString();
-    }
-
-    @Override
-    public Property[] getProperty() {
-
-        return properties;
     }
 
     public int getNumberSymbol(Character symbol) {

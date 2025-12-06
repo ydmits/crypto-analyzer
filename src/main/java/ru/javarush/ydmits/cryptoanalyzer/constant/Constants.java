@@ -3,9 +3,6 @@ package ru.javarush.ydmits.cryptoanalyzer.constant;
 import ru.javarush.ydmits.cryptoanalyzer.alphabet.EncodingTable;
 import ru.javarush.ydmits.cryptoanalyzer.controller.Command;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 public class Constants {
 
     public final static Character[] LATIN = {
@@ -33,15 +30,17 @@ public class Constants {
     };
 
     public final static String START_CONSOLE_MENU = """
-                Caesar's cipher
-                
+                Caesar's cipher                
                 1. Encode text
                 2. Decode text
-                3. Brute Force text
+                3. Brute Force
+                4. Statistic analyzer
                 0. Exit
                 """;
     public static final int HOW_MANY_COMMANDS = Command.values().length;
     public static final int SIZE_ENCODING_TABLE = EncodingTable.size();
+    public static final int HOW_MANY_CHARS_TO_ANALYZE = 10;
+    public static final int HOW_MANY_SYMBOLS_TO_ANALYZE = 5_000;
 
     public static final String REQUEST_COMMAND_NUMBER = "Enter the command number: ";
     public static final String REQUEST_SOURCE_PATH = "Enter the source path file: ";

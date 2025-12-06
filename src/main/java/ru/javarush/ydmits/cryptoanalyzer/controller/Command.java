@@ -1,17 +1,14 @@
 package ru.javarush.ydmits.cryptoanalyzer.controller;
 
-import ru.javarush.ydmits.cryptoanalyzer.controller.command.Action;
-import ru.javarush.ydmits.cryptoanalyzer.controller.command.BruteForce;
-import ru.javarush.ydmits.cryptoanalyzer.controller.command.Decoder;
-import ru.javarush.ydmits.cryptoanalyzer.controller.command.Encoder;
+import ru.javarush.ydmits.cryptoanalyzer.controller.command.*;
 
 public enum Command {
 
     EXIT(null),
     ENCODE(new Encoder()),
     DECODE(new Decoder()),
-    BRUTE_FORCE(new BruteForce());
-
+    BRUTE_FORCE(new BruteForce()),
+    STATISTIC_ANALYZER(new StatisticAnalyzer());
 
     private final Action action;
 

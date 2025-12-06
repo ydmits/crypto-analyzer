@@ -1,29 +1,56 @@
 package ru.javarush.ydmits.cryptoanalyzer.controller.command;
 
-
 import ru.javarush.ydmits.cryptoanalyzer.chipher.CaesarCipher;
 import ru.javarush.ydmits.cryptoanalyzer.chipher.Chipher;
 import ru.javarush.ydmits.cryptoanalyzer.controller.property.Property;
 import ru.javarush.ydmits.cryptoanalyzer.file.FileProcessor;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class BruteForce implements Action {
+public class BruteForce extends AbstractCoder {
 
-    private Property [] properties = {Property.SOURCE_PATH, Property.TARGET_PATH};
+    public BruteForce() {
+        properties = new Property[]{
+                Property.SOURCE_PATH,
+                Property.TARGET_PATH};
+    }
 
     @Override
-    public void execute(){
-        Property[] properties = getProperty();
+    protected void setKey() {
 
-        String sourcePath = properties[0].getProperty();
-        String targetPath = properties[1].getProperty();
+        Map<Character, Integer> forceAnalysisContent = getForceAnalysisContent();
 
+        Character encodingSpace = ' ';
+        Character decodingSpace = ' ';
+
+        int maxCount = 0;
+        for(Map.Entry<Character, Integer> entry : forceAnalysisContent.entrySet()) {
+            if (entry.getValue() > maxCount) {
+                maxCount = entry.getValue();
+                encodingSpace = entry.getKey();
+            }
+        }
         Chipher chipher = new CaesarCipher();
+        int numberDecodingSpace = chipher.getNumberSymbol(decodingSpace);
+        int numberEncodingSpace = chipher.getNumberSymbol(encodingSpace);
 
+        key = Math.abs((numberDecodingSpace - numberEncodingSpace) % chipher.getTableSize());
+    }
+
+    @Override
+    protected void doAction() {
+        Action decoder = new Decoder();
+
+        Property[] decoderProperty = decoder.getProperty();
+
+        decoderProperty[0].setProperty(sourcePath);
+        decoderProperty[1].setProperty(targetPath);
+        decoderProperty[2].setProperty(String.valueOf(key));
+
+        decoder.execute();
+    }
+
+    private Map<Character, Integer> getForceAnalysisContent() {
         FileProcessor fileProcessor = new FileProcessor();
         List<String> content = fileProcessor.readFile(sourcePath);
 
@@ -41,40 +68,6 @@ public class BruteForce implements Action {
             }
         }
 
-        Character encodingSpace = ' ';
-        Character decodingSpace = ' ';
-
-        int maxCount = 0;
-        for(Map.Entry<Character, Integer> entry : forceAnalysisContent.entrySet()) {
-            if (entry.getValue() > maxCount) {
-                maxCount = entry.getValue();
-                encodingSpace = entry.getKey();
-            }
-        }
-
-
-        int numberDecodingSpace = chipher.getNumberSymbol(decodingSpace);
-        int numberEncodingSpace = chipher.getNumberSymbol(encodingSpace);
-
-        int key = Math.abs((numberDecodingSpace - numberEncodingSpace) % chipher.getTableSize());
-
-        Action decoder = new Decoder();
-
-        Property[] decoderProperty = decoder.getProperty();
-
-        decoderProperty[0].setProperty(sourcePath);
-        decoderProperty[1].setProperty(targetPath);
-        decoderProperty[2].setProperty(String.valueOf(key));
-
-        decoder.execute();
-
-
-
-    }
-
-    @Override
-    public Property[] getProperty() {
-
-        return properties;
+        return Collections.unmodifiableMap(forceAnalysisContent);
     }
 }
