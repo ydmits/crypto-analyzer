@@ -9,14 +9,8 @@ import java.util.List;
 
 public class FileNameValidation {
 
-    private static final List<String> FORBIDEN_DIRS_FILES = List.of(
-            "bash_history", "bash_profile", "etc", "proc"
-    );
-    private static final String SEPARATOR = System.getProperty("file.separator");
-
     public void validateForWriting(String fileName) {
-        //Path path = validatePath(fileName);
-        Path path = Path.of(fileName);
+        Path path = validatePath(fileName);
 
         if (Files.exists(path)){
 
@@ -32,8 +26,7 @@ public class FileNameValidation {
     }
 
     public void validateForReading(String fileName) {
-        //Path path = validatePath(fileName);
-        Path path = Path.of(fileName);
+        Path path = validatePath(fileName);
 
         if (Files.notExists(path)){
             throw new FileProcessingException("File " + path + " is not exist");
@@ -53,11 +46,6 @@ public class FileNameValidation {
 
 
     private Path validatePath(String fileName) {
-        for (String pathPart : fileName.split(SEPARATOR)) {
-            if (FORBIDEN_DIRS_FILES.contains(pathPart)) {
-                throw new FileProcessingException("Invalid path part:" + pathPart);
-            }
-        }
 
         try {
             Path path = Path.of(fileName);
