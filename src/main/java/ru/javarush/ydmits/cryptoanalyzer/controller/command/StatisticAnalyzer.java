@@ -135,16 +135,16 @@ public class StatisticAnalyzer extends AbstractCoder{
     private List<Integer> getKeysText(List<Character> topCharsExampleText) {
 
         List<Integer> possibleKeys = new ArrayList<>();
-        Map<Character, Integer> encodingTable = EncodingTable.getMapEncodingTableChatInt();
+        Chipher chipher = new CaesarCipher();
 
         for (int i = 0; i < topCharsExampleText.size(); i++) {
-            possibleKeys.add(encodingTable.get(topCharsExampleText.get(i)));
+            possibleKeys.add(chipher.getNumberSymbol(topCharsExampleText.get(i)));
         }
 
         return possibleKeys;
     }
 
-    Map<Integer, String> getDecodeText
+    private Map<Integer, String> getDecodeText
             (List<Integer> possibleExampleKeys, List<Integer> possibleEncodeKeys, List<Character> encodeText) {
 
         Map<Integer, String> result = new HashMap<>();
@@ -163,7 +163,7 @@ public class StatisticAnalyzer extends AbstractCoder{
         return result;
     }
 
-    Map<Integer, Integer> counterStrike(Map<Integer, String> decodeText,String exampleText) {
+    private Map<Integer, Integer> counterStrike(Map<Integer, String> decodeText,String exampleText) {
         Map<Integer, Integer> result = new HashMap<>();
 
         for(int key: decodeText.keySet()) {
@@ -182,7 +182,7 @@ public class StatisticAnalyzer extends AbstractCoder{
         return result;
     }
 
-    int choiceKey(Map.Entry<Integer, Integer> maxEntry,
+    private int choiceKey(Map.Entry<Integer, Integer> maxEntry,
                   Map<Character, Integer> charsExampleFrequency,
                   Map<Character, Integer> charsEncodeFrequency) {
 

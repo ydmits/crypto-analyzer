@@ -1,6 +1,7 @@
 package ru.javarush.ydmits.cryptoanalyzer.controller.property;
 
 import ru.javarush.ydmits.cryptoanalyzer.constant.Constants;
+import ru.javarush.ydmits.cryptoanalyzer.exception.InvalidUserCommandException;
 import ru.javarush.ydmits.cryptoanalyzer.file.FileNameValidation;
 
 public enum Property {
@@ -37,12 +38,16 @@ public enum Property {
             }
             case KEY -> {
                 int key;
+
                 try {
                     key = Integer.parseInt(content);
                 } catch (NumberFormatException ex) {
-                    return false;
+                    throw new InvalidUserCommandException("Invalid key ", ex);
                 }
-                return (key >= 0 && key <= Constants.SIZE_ENCODING_TABLE); //todo check <= case
+                 if (key < 0 || key >= Constants.SIZE_ENCODING_TABLE){
+                     throw new InvalidUserCommandException("Invalid key " + key);
+                 }
+                return true;
             }
         }
 

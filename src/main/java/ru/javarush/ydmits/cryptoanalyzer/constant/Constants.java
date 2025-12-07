@@ -30,7 +30,7 @@ public class Constants {
     };
 
     public final static String START_CONSOLE_MENU = """
-                Caesar's cipher                
+                Caesar's cipher
                 1. Encode text
                 2. Decode text
                 3. Brute Force
@@ -43,9 +43,6 @@ public class Constants {
     public static final int HOW_MANY_SYMBOLS_TO_ANALYZE = 5_000;
 
     public static final String REQUEST_COMMAND_NUMBER = "Enter the command number: ";
-    public static final String REQUEST_SOURCE_PATH = "Enter the source path file: ";
-    public static final String REQUEST_TARGET_PATH = "Enter the target path file: ";
-    public static final String REQUEST_KEY = "Enter the key: ";
 
     private Constants() {}
 }

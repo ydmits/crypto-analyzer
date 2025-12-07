@@ -5,6 +5,7 @@ import ru.javarush.ydmits.cryptoanalyzer.controller.Command;
 import ru.javarush.ydmits.cryptoanalyzer.controller.MainController;
 import ru.javarush.ydmits.cryptoanalyzer.controller.command.Action;
 import ru.javarush.ydmits.cryptoanalyzer.controller.property.Property;
+import ru.javarush.ydmits.cryptoanalyzer.exception.FileProcessingException;
 import ru.javarush.ydmits.cryptoanalyzer.exception.InvalidUserCommandException;
 
 import java.io.BufferedReader;
@@ -12,13 +13,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class ConsoleDialogue implements Dialogue {
-    private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    private BufferedReader reader;
+    private Action command;
+    private Property[] properties;
+    private MainController controller;
 
-    private Action command = null;
-
-    private Property[] properties = null;
-
-    private MainController controller = new MainController();
+    public ConsoleDialogue() {
+        reader = new BufferedReader(new InputStreamReader(System.in));
+        command = null;
+        properties = null;
+        controller = new MainController();
+    }
 
     @Override
     public void run() {
@@ -31,13 +36,24 @@ public class ConsoleDialogue implements Dialogue {
 
     private void printStartMenu() {
         System.out.println(Constants.START_CONSOLE_MENU);
-
     }
 
     private int getCommandNumber() {
-        String strNumber = readString(Constants.REQUEST_COMMAND_NUMBER);
-        int number = Integer.parseInt(strNumber);
-        int commandNumber = validationNumber(number);
+        boolean isTryAgain;
+        int commandNumber = 0;
+
+        do {
+            isTryAgain = false;
+            try {
+                String strNumber = readString(Constants.REQUEST_COMMAND_NUMBER);
+                int number = Integer.parseInt(strNumber);
+                commandNumber = validationNumber(number);
+
+            } catch (InvalidUserCommandException | NumberFormatException ex) {
+                System.out.println(ex.getMessage());
+                isTryAgain = true;
+            }
+        } while (isTryAgain);
 
         return commandNumber;
     }
@@ -68,12 +84,23 @@ public class ConsoleDialogue implements Dialogue {
     }
 
     private void setProperty() {
+        boolean isTryAgain = false;
+
         for(Property property : properties) {
             do {
-                String content = readString("Enter the valid property " + property.name() + ": ");
-                property.setProperty(content);
-
-            } while (!property.isValidProperty());
+                try {
+                    String content = readString("Enter the valid property " + property.name() + ": ");
+                    property.setProperty(content);
+                    isTryAgain = !property.isValidProperty();
+                } catch (FileProcessingException ex) {
+                    System.out.println("Invalid path file property: ");
+                    System.out.println(ex.getMessage());
+                    isTryAgain = true;
+                } catch (InvalidUserCommandException ex) {
+                    System.out.println(ex.getMessage());
+                    isTryAgain = true;
+                }
+            } while (isTryAgain);
         }
     }
 
@@ -83,7 +110,7 @@ public class ConsoleDialogue implements Dialogue {
 
     private String readString(String message) {
         try {
-            System.out.println(message);
+            System.out.print(message);
             return reader.readLine();
         } catch (IOException e) {
             System.out.println(String.format("Try again by ", e.getMessage()));

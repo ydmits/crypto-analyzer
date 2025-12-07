@@ -1,7 +1,6 @@
 package ru.javarush.ydmits.cryptoanalyzer.chipher;
 
 import ru.javarush.ydmits.cryptoanalyzer.alphabet.EncodingTable;
-import ru.javarush.ydmits.cryptoanalyzer.controller.property.Property;
 
 import java.util.Map;
 
