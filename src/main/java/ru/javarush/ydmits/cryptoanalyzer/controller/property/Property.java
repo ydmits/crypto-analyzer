@@ -1,0 +1,58 @@
+package ru.javarush.ydmits.cryptoanalyzer.controller.property;
+
+import ru.javarush.ydmits.cryptoanalyzer.constant.Constants;
+import ru.javarush.ydmits.cryptoanalyzer.exception.InvalidUserCommandException;
+import ru.javarush.ydmits.cryptoanalyzer.file.FileNameValidation;
+
+public enum Property {
+    SOURCE_PATH,
+    TARGET_PATH,
+    ANALYSIS_PATH,
+    KEY;
+
+    private String content;
+
+    Property() {
+        this.content = null;
+    }
+
+    public String getProperty() {
+        return content;
+    }
+
+    public void setProperty(String content) {
+        this.content = content;
+    }
+
+    public boolean isValidProperty() {
+        FileNameValidation fileNameValidation = new FileNameValidation();
+
+        switch (this) {
+            case SOURCE_PATH, ANALYSIS_PATH -> {
+                fileNameValidation.validateForReading(content);
+                return true;
+            }
+            case TARGET_PATH -> {
+                fileNameValidation.validateForWriting(content);
+                return true;
+            }
+            case KEY -> {
+                int key;
+
+                try {
+                    key = Integer.parseInt(content);
+                } catch (NumberFormatException ex) {
+                    throw new InvalidUserCommandException("Invalid key ", ex);
+                }
+                 if (key < 0 || key >= Constants.SIZE_ENCODING_TABLE){
+                     throw new InvalidUserCommandException("Invalid key " + key);
+                 }
+                return true;
+            }
+        }
+
+        return true;
+    }
+
+
+}
