@@ -2,17 +2,23 @@ package ru.javarush.ydmits.cryptoanalyzer.controller.command;
 
 import ru.javarush.ydmits.cryptoanalyzer.chipher.CaesarCipher;
 import ru.javarush.ydmits.cryptoanalyzer.chipher.Chipher;
+import ru.javarush.ydmits.cryptoanalyzer.constant.Constants;
 import ru.javarush.ydmits.cryptoanalyzer.controller.property.Property;
+import ru.javarush.ydmits.cryptoanalyzer.exception.FileProcessingException;
 import ru.javarush.ydmits.cryptoanalyzer.file.FileProcessor;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class BruteForce extends AbstractCoder {
+    private int howManySymbolsToAnalyze;
 
     public BruteForce() {
         properties = new Property[]{
                 Property.SOURCE_PATH,
                 Property.TARGET_PATH};
+
+        howManySymbolsToAnalyze = Constants.HOW_MANY_SYMBOLS_TO_ANALYZE;
     }
 
     @Override
@@ -52,7 +58,20 @@ public class BruteForce extends AbstractCoder {
 
     private Map<Character, Integer> getForceAnalysisContent() {
         FileProcessor fileProcessor = new FileProcessor();
-        List<String> content = fileProcessor.readFile(sourcePath);
+        List<String> content = new ArrayList<>();
+
+        int index = 0;
+        try(Stream<String> contentFile = fileProcessor.readFile(sourcePath)) {
+            Iterator<String> iterator = contentFile.iterator();
+
+            while (iterator.hasNext() && index < howManySymbolsToAnalyze) {
+                String str = iterator.next();
+                content.add(str);
+                index+= str.length();
+            }
+        } catch (Exception e) {
+            throw new FileProcessingException(e.getMessage(), e);
+        }
 
         Map<Character, Integer> forceAnalysisContent = new HashMap<>();
 

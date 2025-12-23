@@ -5,9 +5,11 @@ import ru.javarush.ydmits.cryptoanalyzer.chipher.CaesarCipher;
 import ru.javarush.ydmits.cryptoanalyzer.chipher.Chipher;
 import ru.javarush.ydmits.cryptoanalyzer.constant.Constants;
 import ru.javarush.ydmits.cryptoanalyzer.controller.property.Property;
+import ru.javarush.ydmits.cryptoanalyzer.exception.FileProcessingException;
 import ru.javarush.ydmits.cryptoanalyzer.file.FileProcessor;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class StatisticAnalyzer extends AbstractCoder{
 
@@ -58,18 +60,25 @@ public class StatisticAnalyzer extends AbstractCoder{
         List<Character> result = new ArrayList<>();
 
         FileProcessor fileProcessor = new FileProcessor();
-        List<String> contentFile = fileProcessor.readFile(path);
+        List<String> content = new ArrayList<>();
 
         int index = 0;
-        for (String str : contentFile) {
-            if (index >= howManySymbolsToAnalyze) {
-                break;
+        try(Stream<String> contentFile = fileProcessor.readFile(path)) {
+            Iterator<String> iterator = contentFile.iterator();
+
+            while (iterator.hasNext() && index < howManySymbolsToAnalyze) {
+                String str = iterator.next();
+                content.add(str);
+                index+= str.length();
             }
+        } catch (Exception e) {
+            throw new FileProcessingException(e.getMessage(), e);
+        }
+
+        for (String str : content) {
             char[] chars = str.toCharArray();
+
             for (char ch : chars) {
-                if (index >= howManySymbolsToAnalyze) {
-                    break;
-                }
                 result.add(ch);
                 index++;
             }

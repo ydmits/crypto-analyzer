@@ -4,9 +4,11 @@ package ru.javarush.ydmits.cryptoanalyzer.controller.command;
 import ru.javarush.ydmits.cryptoanalyzer.chipher.CaesarCipher;
 import ru.javarush.ydmits.cryptoanalyzer.chipher.Chipher;
 import ru.javarush.ydmits.cryptoanalyzer.controller.property.Property;
+import ru.javarush.ydmits.cryptoanalyzer.exception.FileProcessingException;
 import ru.javarush.ydmits.cryptoanalyzer.file.FileProcessor;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Decoder extends AbstractCoder {
 
@@ -25,14 +27,15 @@ public class Decoder extends AbstractCoder {
     @Override
     protected void doAction() {
         FileProcessor fileProcessor = new FileProcessor();
-
-        List<String> content = fileProcessor.readFile(sourcePath);
-
         Chipher chipher = new CaesarCipher();
 
-        for (String str : content) {
-            String result = chipher.execute(str, key);
-            fileProcessor.appendToFile(targetPath, result);
+        try (Stream<String> content = fileProcessor.readFile(sourcePath)){
+            content.forEach(str -> {
+                String result = chipher.execute(str, key);
+                fileProcessor.appendToFile(targetPath, result);
+            });
+        } catch (Exception e) {
+            throw new FileProcessingException(e.getMessage(), e);
         }
     }
 }

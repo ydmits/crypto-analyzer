@@ -8,17 +8,29 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class FileProcessor {
 
     private static final StandardOpenOption[] FILE_WRITE_OPTION =
             {StandardOpenOption.CREATE, StandardOpenOption.APPEND};
 
-    public List<String> readFile(String filename) {
+//    public List<String> readFile1(String filename) {
+//        try {
+//
+//            Path filePath = Path.of(filename);
+//            return Files.readAllLines(filePath);
+//
+//        } catch (IOException | InvalidPathException ex) {
+//            throw new FileProcessingException(ex.getMessage(), ex);
+//        }
+//    }
+
+    public Stream<String> readFile(String filename) {
         try {
 
             Path filePath = Path.of(filename);
-            return Files.readAllLines(filePath);
+            return Files.lines(filePath);
 
         } catch (IOException | InvalidPathException ex) {
             throw new FileProcessingException(ex.getMessage(), ex);
